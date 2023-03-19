@@ -60,17 +60,25 @@ function insertBombs(bombs, sqrs){
 }
 
 function changeCol(sqrs){
+    const scoreContainer = document.getElementById('score')
     let score=0;
+
     sqrs.forEach((sqr, index) => {
-        sqr.addEventListener('click', function(){
-            sqr.classList.add("text-white")
-            if(sqr.classList.contains("bomb")){
-                sqr.classList.add("bg-danger")
-            }else{
-                sqr.classList.add("bg-success")
-                score++; 
-            }
-        })
+        scoreContainer.innerHTML = 'Il tuo punteggio è: ' + score;
+            sqr.addEventListener('click', function(){
+                sqr.classList.add("text-white")
+                if(sqr.classList.contains("bomb")){
+                    sqr.classList.add("bg-danger")
+                    scoreContainer.innerHTML += " - Hai Perso"
+                    setTimeout(function() {
+                        location.reload();
+                      }, 3000);
+                }else{
+                    sqr.classList.add("bg-success")
+                    score++; 
+                    scoreContainer.innerHTML = 'Il tuo punteggio è: ' + score;
+                }
+            })
     });
 }
 
