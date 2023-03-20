@@ -46,6 +46,7 @@ function generateBomb(NUM_BOMB, numSqr){
         bomb = Math.floor(Math.random()*numSqr*numSqr) + 1
         if(bombs.indexOf(bomb) === -1){
             bombs.push(bomb)
+            console.log(bomb)
         }
     }
     return bombs
@@ -55,6 +56,8 @@ function insertBombs(bombs, sqrs){
     sqrs.forEach((sqr, index) => {
         if (bombs.includes(index + 1)) {
             sqr.classList.add("bomb");
+            sqr.classList.add("bg-danger");
+
         }  
     });
 }
@@ -62,24 +65,51 @@ function insertBombs(bombs, sqrs){
 function changeCol(sqrs){
     const scoreContainer = document.getElementById('score')
     let score=0;
-
+    let gameover = false, result;
     sqrs.forEach((sqr, index) => {
         scoreContainer.innerHTML = 'Il tuo punteggio è: ' + score;
             sqr.addEventListener('click', function(){
-                sqr.classList.add("text-white")
-                if(sqr.classList.contains("bomb")){
-                    sqr.classList.add("bg-danger")
-                    scoreContainer.innerHTML += " - Hai Perso"
-                    setTimeout(function() {
-                        location.reload();
-                      }, 3000);
-                }else{
+                if((sqrs.length - document.querySelectorAll('.bg-danger').length - 1) == document.querySelectorAll('.bg-success').length){
                     sqr.classList.add("bg-success")
                     score++; 
                     scoreContainer.innerHTML = 'Il tuo punteggio è: ' + score;
+                    printResult('win', score)
+                }else if(gameover == false && !sqr.classList.contains("bg-success")){
+                    sqr.classList.add("text-white")
+                    if(sqr.classList.contains("bomb")){
+                        sqr.classList.add("bg-danger")
+                        scoreContainer.innerHTML += " - Hai Perso"
+                        gameover = true
+                        printResult('lose', score)
+                    }
+                    else{
+                        sqr.classList.add("bg-success")
+                        score++; 
+                        scoreContainer.innerHTML = 'Il tuo punteggio è: ' + score;
+                    }
                 }
+                    
             })
-    });
+
+        }
+    )
+    console.log(gameover)
+    
+
 }
 
+function printResult(result, score){
+    const resultEl = document.querySelector('.result')
+    let resultOutcome= document.querySelector('.result-outcome')
+    let scoreOut= document.querySelector('.score-out')
+    resultEl.classList.remove('d-none')
+    scoreOut.innerHTML += score;
+    if(result === 'win'){
+        resultOutcome.innerHTML = "Hai Vinto"
+        resultOutcome.classList.add("text-success")
+    }else{
+        resultOutcome.innerHTML = "Hai Perso"
+        resultOutcome.classList.add("text-danger")
+    }
+}
 game();
